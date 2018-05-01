@@ -20,16 +20,54 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      numCont: null,
-      apePat: null,
-      apeMat: null,
-      nombre: null,
-      carrera: null,
-      semestre: null
+      numCont: '',
+      apePat: '',
+      apeMat: '',
+      nombre: '',
+      carrera: '',
+      semestre: '',
+      studentList: []
     }
+    this.handleChange= this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.registerStudent = this.registerStudent.bind(this);
   }
-  render() {
+  registerStudent() {
+    const {
+      numCont,
+      apePat,
+      apeMat,
+      nombre,
+      carrera,
+      semestre
+    } = this.state
+   var aux = {numCont, apePat, apeMat, nombre, carrera, semestre};
+   this.setState((prevState) =>  {
+     return {
+      studentList: [
+        ...prevState.studentList,
+        aux
+      ],
+      numCont: '',
+      apePat: '',
+      apeMat: '',
+      nombre: '',
+      carrera: '',
+      semestre: ''
+     }
+   })
+  }
+
+  handleChange(event) {
+    this.setState({[event.target.name]: event.target.value});
+  }
+
+  handleSubmit(event) {
     console.log(this.state);
+    event.preventDefault();
+  }
+
+  render() {
     return (
       <div className="App">
         <header className="App-header">
@@ -50,29 +88,29 @@ class App extends Component {
                <Form>
                <FormGroup>
                  <Label>Numero de Control</Label>
-                 <Input id="numCont"/>
+                 <Input name="numCont" onChange={this.handleChange} value={this.state.numCont}/>
                </FormGroup>
                <FormGroup>
                  <Label>Apellido Paterno</Label>
-                 <Input id="apePat"/>
+                 <Input name="apePat" onChange={this.handleChange} value={this.state.apePat}/>
                </FormGroup>
                <FormGroup>
                  <Label>Apellido Materno</Label>
-                 <Input id="apeMat"/>
+                 <Input name="apeMat" onChange={this.handleChange} value={this.state.apeMat}/>
                </FormGroup>
                <FormGroup>
                  <Label>Nombre</Label>
-                 <Input id="nombre"/>
+                 <Input name="nombre" onChange={this.handleChange} value={this.state.nombre}/>
                </FormGroup>
                <FormGroup>
                  <Label>Carrera</Label>
-                 <Input id="carrera"/>
+                 <Input name="carrera" onChange={this.handleChange} value={this.state.carrera}/>
                </FormGroup>
                <FormGroup>
                  <Label>Semestre</Label>
-                 <Input id="semestre" />
+                 <Input name="semestre" onChange={this.handleChange} value={this.state.semestre}/>
                </FormGroup>
-               <Button color="success">Registrar</Button>
+               <Button onClick={this.registerStudent} color="success">Registrar</Button>
              </Form>
              </fieldset>
            </Col>
@@ -95,14 +133,22 @@ class App extends Component {
                  </tr>
                </thead>
                <tbody>
-                 <tr>
-                   <th scope="row">13301053</th>
-                   <td>Rivera</td>
-                   <td>Diaz</td>
-                   <td>Hugo Alberto</td>
-                   <td>Ing.Sistemas Computacionales</td>
-                   <td>10</td>
-                 </tr>
+              {
+                this.state.studentList.map( item =>
+                {
+                  return (
+                    <tr key={item.numCont}>
+                      <th scope="row">{item.numCont}</th>
+                      <td>{item.apePat}</td>
+                      <td>{item.apeMat}</td>
+                      <td>{item.nombre}</td>
+                      <td>{item.carrera}</td>
+                      <td>{item.semestre}</td>
+                    </tr>
+                  )
+                })
+
+              }
                </tbody>
              </Table>
            </Col>
