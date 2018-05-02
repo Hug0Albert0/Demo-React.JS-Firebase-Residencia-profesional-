@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import dbRef from './firebase';
 import {
   Button,
   Container,
@@ -56,6 +57,9 @@ class App extends Component {
       semestre: ''
      }
    })
+    dbRef.child('usuarios')
+         .child('estudiantes')
+         .push({numCont,apePat,apeMat,nombre,carrera,semestre});
   }
 
   handleChange(event) {
