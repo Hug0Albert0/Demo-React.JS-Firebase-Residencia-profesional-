@@ -18,6 +18,7 @@ import {
 } from 'reactstrap';
 
 class App extends Component {
+
   constructor(props) {
     super(props)
     this.state = {
@@ -42,13 +43,12 @@ class App extends Component {
       carrera,
       semestre
     } = this.state
-   var aux = {numCont, apePat, apeMat, nombre, carrera, semestre};
+   // var aux = {numCont, apePat, apeMat, nombre, carrera, semestre};
    this.setState((prevState) =>  {
      return {
-      studentList: [
-        ...prevState.studentList,
-        aux
-      ],
+      //   ...prevState.studentList,
+      //   aux
+      // ],
       numCont: '',
       apePat: '',
       apeMat: '',
@@ -61,6 +61,16 @@ class App extends Component {
          .child('estudiantes')
          .push({numCont,apePat,apeMat,nombre,carrera,semestre});
   }
+
+  componentDidMount () {
+  dbRef.child('usuarios')
+       .child('estudiantes')
+       .on('value',(snapshot) => {
+       let data =snapshot.val();
+       let arrSnap = Object.values(data);
+       this.setState({studentList:arrSnap});      
+    });       
+ }
 
   handleChange(event) {
     this.setState({[event.target.name]: event.target.value});
