@@ -67,9 +67,14 @@ class App extends Component {
        .child('estudiantes')
        .on('value',(snapshot) => {
        let data =snapshot.val();
+       if (data!=null) {
        let arrSnap = Object.values(data);
-       this.setState({studentList:arrSnap});      
-    });       
+       this.setState({studentList:arrSnap});
+      } else {
+      	this.setState({studentList: []});
+      }
+
+   });       
  }
 
   handleChange(event) {

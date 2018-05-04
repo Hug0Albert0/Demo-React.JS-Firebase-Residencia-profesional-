@@ -11,11 +11,11 @@ export default cardStyles = StyleSheet.create ({
     borderColor: 'black',
     marginTop: 15,
     marginBottom: 5,
-    paddingTop:20,
+    paddingTop:25,
     paddingLeft:50
   },
   studentData: {
-    fontSize:20
+    fontSize:18
   }
 
 });
