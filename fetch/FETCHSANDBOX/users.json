@@ -1,0 +1,19 @@
+[
+	{
+		"id": 1,
+		"name": "Hugo Alberto Rivera Diaz",
+		"email": "example@example.com"
+	},
+
+	{
+		"id": 2,
+		"name": "Roberto Carlos Rivera Diaz",
+		"email": "example@example.com"
+	},
+
+	{
+		"id": 3,
+		"name": "Reyna Jimenez",
+		"email": "example@example.com"
+	}
+]

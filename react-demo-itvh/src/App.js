@@ -74,7 +74,7 @@ class App extends Component {
       	this.setState({studentList: []});
       }
 
-   });       
+   });
  }
 
   handleChange(event) {
@@ -107,27 +107,27 @@ class App extends Component {
                <Form>
                <FormGroup>
                  <Label>Numero de Control</Label>
-                 <Input name="numCont" onChange={this.handleChange} value={this.state.numCont}/>
+                 <Input name="numCont" type='tel' minLength='8' maxLength='8' onChange={this.handleChange} value={this.state.numCont} required/>
                </FormGroup>
                <FormGroup>
                  <Label>Apellido Paterno</Label>
-                 <Input name="apePat" onChange={this.handleChange} value={this.state.apePat}/>
+                 <Input type='text' name="apePat" onChange={this.handleChange} value={this.state.apePat} required/>
                </FormGroup>
                <FormGroup>
                  <Label>Apellido Materno</Label>
-                 <Input name="apeMat" onChange={this.handleChange} value={this.state.apeMat}/>
+                 <Input name="apeMat" onChange={this.handleChange} value={this.state.apeMat} required/>
                </FormGroup>
                <FormGroup>
                  <Label>Nombre</Label>
-                 <Input name="nombre" onChange={this.handleChange} value={this.state.nombre}/>
+                 <Input name="nombre" onChange={this.handleChange} value={this.state.nombre} required/>
                </FormGroup>
                <FormGroup>
                  <Label>Carrera</Label>
-                 <Input name="carrera" onChange={this.handleChange} value={this.state.carrera}/>
+                 <Input name="carrera" onChange={this.handleChange} value={this.state.carrera} required/>
                </FormGroup>
                <FormGroup>
                  <Label>Semestre</Label>
-                 <Input name="semestre" onChange={this.handleChange} value={this.state.semestre}/>
+                 <Input type='tel' maxLength='2' name="semestre" onChange={this.handleChange} value={this.state.semestre} required/>
                </FormGroup>
                <Button onClick={this.registerStudent} color="success">Registrar</Button>
              </Form>
