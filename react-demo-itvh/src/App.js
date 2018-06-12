@@ -22,56 +22,45 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      numCont: '',
-      apePat: '',
-      apeMat: '',
-      nombre: '',
-      carrera: '',
-      semestre: '',
-      studentList: []
+      date: this.generateDate(),
+      title: '',
+      body: '',      
+      adList: []
     }
     this.handleChange= this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.registerStudent = this.registerStudent.bind(this);
+    this.generateDate = this.generateDate.bind(this);
   }
   registerStudent() {
     const {
-      numCont,
-      apePat,
-      apeMat,
-      nombre,
-      carrera,
-      semestre
+      date,
+      title,
+      body    
     } = this.state
    // var aux = {numCont, apePat, apeMat, nombre, carrera, semestre};
    this.setState((prevState) =>  {
      return {
       //   ...prevState.studentList,
       //   aux
-      // ],
-      numCont: '',
-      apePat: '',
-      apeMat: '',
-      nombre: '',
-      carrera: '',
-      semestre: ''
+      // ],   
+      title: '',
+      body: ''   
      }
    })
-    dbRef.child('usuarios')
-         .child('estudiantes')
-         .push({numCont,apePat,apeMat,nombre,carrera,semestre});
+    dbRef.child('avisos')        
+         .push({date,title,body});
   }
 
   componentDidMount () {
-  dbRef.child('usuarios')
-       .child('estudiantes')
+  dbRef.child('avisos')        
        .on('value',(snapshot) => {
        let data =snapshot.val();
        if (data!=null) {
        let arrSnap = Object.values(data);
-       this.setState({studentList:arrSnap});
+       this.setState({adList:arrSnap});
       } else {
-      	this.setState({studentList: []});
+      	this.setState({adList: []});
       }
 
    });
@@ -86,83 +75,82 @@ class App extends Component {
     event.preventDefault();
   }
 
+  generateDate() {
+    let today = new Date();
+    let dd = today.getDate();
+    let mm = today.getMonth()+1; //January is 0!
+    let yyyy = today.getFullYear();
+
+    if(dd<10) {
+        dd = '0'+dd
+    } 
+
+    if(mm<10) {
+        mm = '0'+mm
+    } 
+
+    today = dd + '/' + mm + '/' + yyyy;
+
+    return today;
+  }
+
   render() {
     return (
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Demo de Funcionalidades de Firebase + React.js en Aplicaciones Multiplataforma</h1>
-        </header>
-        {/* <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p> */}
-        {/* <Button color="danger">Bienvenido</Button> */}
+          <h1>Avisos ITVH</h1>
+          <h3>En contacto contigo</h3>
+        </header>        
        <Container fluid={true}>
-         <Row style={{padding: 10}}>
-           <Col xs="4" style={{border:1 , borderStyle:"solid", borderRadius:5}} >
-             <fieldset style={{padding: 20}}>
-               <legend>
-                 Agregar Estudiante
-               </legend>
+         <Row style={{padding: 30}}>
+           <Col lg="4" style={{paddingBottom:20}}>
+             <fieldset style={{padding:20,border:1 , borderStyle:"solid", borderRadius:5, display:'flex'}}>
+               <Label style={{fontSize:25}}>
+                 Nuevo Aviso
+               </Label>
                <Form>
                <FormGroup>
-                 <Label>Numero de Control</Label>
-                 <Input name="numCont" type='tel' minLength='8' maxLength='8' onChange={this.handleChange} value={this.state.numCont} required/>
+                 <Label className="labelForm">Titulo del Aviso</Label>
+                 <Input name="title" type='text' onChange={this.handleChange} value={this.state.title} required/>
                </FormGroup>
                <FormGroup>
-                 <Label>Apellido Paterno</Label>
-                 <Input type='text' name="apePat" onChange={this.handleChange} value={this.state.apePat} required/>
+                 <Label>Cuerpo del Aviso</Label>
+                 <Input type='textarea' name="body" onChange={this.handleChange} value={this.state.body} required style={{height:200}}/>
                </FormGroup>
-               <FormGroup>
-                 <Label>Apellido Materno</Label>
-                 <Input name="apeMat" onChange={this.handleChange} value={this.state.apeMat} required/>
-               </FormGroup>
-               <FormGroup>
-                 <Label>Nombre</Label>
-                 <Input name="nombre" onChange={this.handleChange} value={this.state.nombre} required/>
-               </FormGroup>
-               <FormGroup>
-                 <Label>Carrera</Label>
-                 <Input name="carrera" onChange={this.handleChange} value={this.state.carrera} required/>
-               </FormGroup>
-               <FormGroup>
-                 <Label>Semestre</Label>
-                 <Input type='tel' maxLength='2' name="semestre" onChange={this.handleChange} value={this.state.semestre} required/>
-               </FormGroup>
-               <Button onClick={this.registerStudent} color="success">Registrar</Button>
+               <div style={{width:'100%',display:'flex', justifyContent:'flex-end'}}>
+                  <Button onClick={this.registerStudent} color="success">Enviar</Button>
+               </div>      
+              
              </Form>
              </fieldset>
            </Col>
            <Col>
-             <h2>Lista de Estudiantes</h2>
+             <h2 style={{textAlign:'center'}}>Actividad reciente</h2>
              <Nav tabs>
                <NavItem>
-                 <NavLink href="#" active>Estudiantes</NavLink>
+                 <NavLink href="#" active>Avisos</NavLink>
                </NavItem>
              </Nav>
              <Table striped>
                <thead>
-                 <tr>
-                   <th>No. Control</th>
-                   <th>Apellido Paterno</th>
-                   <th>Apellido Materno</th>
-                   <th>Nombre</th>
-                   <th>Carrera</th>
-                   <th>Semestre</th>
+                 <tr style={{textAlign:'center'}}>
+                   <th>Fecha</th>
+                   <th>Titulo</th>
+                   <th>Cuerpo</th>
+                   <th>Opciones</th>                                     
                  </tr>
                </thead>
                <tbody>
               {
-                this.state.studentList.map( item =>
+                this.state.adList.map( item =>
                 {
                   return (
-                    <tr key={item.numCont}>
-                      <th scope="row">{item.numCont}</th>
-                      <td>{item.apePat}</td>
-                      <td>{item.apeMat}</td>
-                      <td>{item.nombre}</td>
-                      <td>{item.carrera}</td>
-                      <td>{item.semestre}</td>
+                    <tr key={1}>
+                      <th scope="row">{this.generateDate()}</th>          
+                      <td>{item.title}</td>
+                      <td style={{textAlign:'justify'}}>{item.body}</td>
+                      <td style={{textAlign:'center'}}><a>Eliminar</a></td>            
                     </tr>
                   )
                 })
