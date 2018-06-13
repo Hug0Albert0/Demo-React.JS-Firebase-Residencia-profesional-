@@ -20,8 +20,9 @@ import {
 class App extends Component {
   constructor(props) {
     super(props)
+    const fecha = this.generateDate();
     this.state = {     
-      date: this.generateDate(),
+      date: fecha,
       title: '',
       body: '',      
       adList: []  
@@ -32,6 +33,22 @@ class App extends Component {
     this.generateDate = this.generateDate.bind(this); 
     this.deleteAd = this.deleteAd.bind(this);   
   }
+    componentDidMount () {
+    dbRef.child('avisos')        
+         .on('value',(snapshot) => {
+         let data = snapshot.val();       
+         if (data != null) {
+           let arrSnap = Object.values(data);
+           arrSnap.reverse();      
+           arrSnap.map((item,index) => {
+              item.id = Object.keys(data).reverse()[index];       
+           })
+           this.setState({ adList: arrSnap });
+        } else {
+          this.setState({ adList: [] });
+        } 
+     });
+  }
   registerStudent () {
     const {
       date,
@@ -39,8 +56,7 @@ class App extends Component {
       body          
     } = this.state   
     this.setState((prevState) =>  {
-      return {
-        date:'',   
+      return {        
         title: '',
         body: ''   
       }
@@ -70,24 +86,7 @@ class App extends Component {
     } 
 
     today = dd + '/' + mm + '/' + yyyy;
-
     return today;
-  }
-  componentDidMount () {
-    dbRef.child('avisos')        
-         .on('value',(snapshot) => {
-         let data = snapshot.val();       
-         if (data != null) {
-           let arrSnap = Object.values(data);
-           arrSnap.reverse();      
-           arrSnap.map((item,index) => {
-              item.id = Object.keys(data).reverse()[index];       
-           })
-           this.setState({ adList: arrSnap });
-        } else {
-          this.setState({ adList: [] });
-        } 
-     });
   }
   deleteAd (id) { 
     dbRef.child('avisos').child(id).remove();   
