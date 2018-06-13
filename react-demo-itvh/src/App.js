@@ -18,64 +18,44 @@ import {
 } from 'reactstrap';
 
 class App extends Component {
-
   constructor(props) {
     super(props)
-    this.state = {
+    this.state = {     
       date: this.generateDate(),
       title: '',
       body: '',      
-      adList: []
+      adList: []  
     }
     this.handleChange= this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.registerStudent = this.registerStudent.bind(this);
-    this.generateDate = this.generateDate.bind(this);
+    this.generateDate = this.generateDate.bind(this); 
+    this.deleteAd = this.deleteAd.bind(this);   
   }
-  registerStudent() {
+  registerStudent () {
     const {
       date,
       title,
-      body    
-    } = this.state
-   // var aux = {numCont, apePat, apeMat, nombre, carrera, semestre};
-   this.setState((prevState) =>  {
-     return {
-      //   ...prevState.studentList,
-      //   aux
-      // ],   
-      title: '',
-      body: ''   
-     }
-   })
+      body          
+    } = this.state   
+    this.setState((prevState) =>  {
+      return {
+        date:'',   
+        title: '',
+        body: ''   
+      }
+    })
     dbRef.child('avisos')        
          .push({date,title,body});
   }
-
-  componentDidMount () {
-  dbRef.child('avisos')        
-       .on('value',(snapshot) => {
-       let data =snapshot.val();
-       if (data!=null) {
-       let arrSnap = Object.values(data);
-       this.setState({adList:arrSnap});
-      } else {
-      	this.setState({adList: []});
-      }
-
-   });
- }
-
-  handleChange(event) {
-    this.setState({[event.target.name]: event.target.value});
+  handleChange (event) {
+    this.setState({ [event.target.name]: event.target.value });
   }
-
-  handleSubmit(event) {
+  handleSubmit (event) {
     console.log(this.state);
     event.preventDefault();
   }
-
-  generateDate() {
+  generateDate () {
     let today = new Date();
     let dd = today.getDate();
     let mm = today.getMonth()+1; //January is 0!
@@ -93,8 +73,26 @@ class App extends Component {
 
     return today;
   }
-
-  render() {
+  componentDidMount () {
+    dbRef.child('avisos')        
+         .on('value',(snapshot) => {
+         let data = snapshot.val();       
+         if (data != null) {
+           let arrSnap = Object.values(data);
+           arrSnap.reverse();      
+           arrSnap.map((item,index) => {
+              item.id = Object.keys(data).reverse()[index];       
+           })
+           this.setState({ adList: arrSnap });
+        } else {
+          this.setState({ adList: [] });
+        } 
+     });
+  }
+  deleteAd (id) { 
+    dbRef.child('avisos').child(id).remove();   
+  }
+  render () {
     return (
       <div className="App">
         <header className="App-header">
@@ -102,7 +100,7 @@ class App extends Component {
           <h1>Avisos ITVH</h1>
           <h3>En contacto contigo</h3>
         </header>        
-       <Container fluid={true}>
+       <Container fluid>
          <Row style={{padding: 30}}>
            <Col lg="4" style={{paddingBottom:20}}>
              <fieldset style={{padding:20,border:1 , borderStyle:"solid", borderRadius:5, display:'flex'}}>
@@ -112,16 +110,15 @@ class App extends Component {
                <Form>
                <FormGroup>
                  <Label className="labelForm">Titulo del Aviso</Label>
-                 <Input name="title" type='text' onChange={this.handleChange} value={this.state.title} required/>
+                 <Input name="title" type='text' onChange={this.handleChange} value={this.state.title} required />
                </FormGroup>
                <FormGroup>
                  <Label>Cuerpo del Aviso</Label>
-                 <Input type='textarea' name="body" onChange={this.handleChange} value={this.state.body} required style={{height:200}}/>
+                 <Input type='textarea' name="body" onChange={this.handleChange} value={this.state.body} required style={{height:200}} />
                </FormGroup>
                <div style={{width:'100%',display:'flex', justifyContent:'flex-end'}}>
-                  <Button onClick={this.registerStudent} color="success">Enviar</Button>
-               </div>      
-              
+                  <Button size="lg" onClick={this.registerStudent} color="success">Enviar</Button>
+               </div>  
              </Form>
              </fieldset>
            </Col>
@@ -142,19 +139,21 @@ class App extends Component {
                  </tr>
                </thead>
                <tbody>
-              {
-                this.state.adList.map( item =>
-                {
+              {     
+                this.state.adList.map((item, index) => {
                   return (
-                    <tr key={1}>
-                      <th scope="row">{this.generateDate()}</th>          
+                    <tr key={index}>
+                      <th scope="row">{item.date}</th>          
                       <td>{item.title}</td>
-                      <td style={{textAlign:'justify'}}>{item.body}</td>
-                      <td style={{textAlign:'center'}}><a>Eliminar</a></td>            
+                      <td style={{ textAlign:'justify' }}>{item.body}</td>
+                      <td style={{ textAlign:'center' }}>
+                        <Button size='sm' color='danger' onClick={() => this.deleteAd(item.id)}>
+                          Eliminar
+                        </Button>
+                      </td>            
                     </tr>
                   )
                 })
-
               }
                </tbody>
              </Table>
