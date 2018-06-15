@@ -46,8 +46,12 @@ class App extends Component {
            this.setState({ adList: arrSnap });
         } else {
           this.setState({ adList: [] });
-        } 
+        }  
      });
+      dbRef.child('tokens').once('value').then((results,index) => { 
+        let tokensList = Object.values(results.val());
+        console.log(tokensList);       
+      }) 
   }
   registerStudent () {
     const {
